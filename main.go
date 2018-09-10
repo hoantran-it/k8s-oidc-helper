@@ -61,7 +61,6 @@ func main() {
 	if gcf != nil {
 		clientID = gcf.ClientID
 		clientSecret = gcf.ClientSecret
-		mailDomain = gcf.mailDomain
 	} else {
 		clientID = viper.GetString("client-id")
 		clientSecret = viper.GetString("client-secret")

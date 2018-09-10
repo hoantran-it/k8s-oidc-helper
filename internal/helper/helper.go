@@ -125,8 +125,8 @@ func GenerateAuthInfo(clientId, clientSecret, idToken, refreshToken string) *cli
 	}
 }
 
-func createOpenCmd(oauthUrl, clientID string) (*exec.Cmd, error) {
-	url := fmt.Sprintf(oauthUrl, clientID)
+func createOpenCmd(oauthUrl, clientID string, mailDomain string) (*exec.Cmd, error) {
+	url := fmt.Sprintf(oauthUrl, clientID, mailDomain)
 
 	switch os := runtime.GOOS; os {
 	case "darwin":
@@ -138,7 +138,7 @@ func createOpenCmd(oauthUrl, clientID string) (*exec.Cmd, error) {
 	return nil, fmt.Errorf("Could not detect the open command for OS: %s", runtime.GOOS)
 }
 
-func LaunchBrowser(openBrowser bool, oauthUrl, clientID string) {
+func LaunchBrowser(openBrowser bool, oauthUrl, clientID string, mailDomain string) {
 	openInstructions := fmt.Sprintf("Open this url in your browser: %s\n", fmt.Sprintf(oauthUrl, clientID))
 
 	if !openBrowser {
@@ -146,7 +146,7 @@ func LaunchBrowser(openBrowser bool, oauthUrl, clientID string) {
 		return
 	}
 
-	cmd, err := createOpenCmd(oauthUrl, clientID)
+	cmd, err := createOpenCmd(oauthUrl, clientID, mailDomain)
 	if err != nil {
 		fmt.Print(openInstructions)
 		return
