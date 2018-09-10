@@ -21,13 +21,14 @@ import (
 
 const Version = "v0.1.0"
 
-const oauthUrl = "https://accounts.google.com/o/oauth2/auth?redirect_uri=urn:ietf:wg:oauth:2.0:oob&response_type=code&client_id=%s&scope=openid+email+profile&approval_prompt=force&access_type=offline"
+const oauthUrl = "https://accounts.google.com/o/oauth2/auth?redirect_uri=urn:ietf:wg:oauth:2.0:oob&response_type=code&client_id=%s&scope=openid+email+profile&approval_prompt=force&access_type=offline&hd=%s"
 
 func main() {
 	flag.BoolP("version", "v", false, "Print version and exit")
 	flag.BoolP("open", "o", true, "Open the oauth approval URL in the browser")
 	flag.String("client-id", "", "The ClientID for the application")
 	flag.String("client-secret", "", "The ClientSecret for the application")
+	flag.String("mail-domain", "gmail.com", "The Mail Domain for the application")
 	flag.StringP("config", "c", "", "Path to a json file containing your application's ClientID and ClientSecret. Supercedes the --client-id and --client-secret flags.")
 	flag.BoolP("write", "w", false, "Write config to file. Merges in the specified file")
 	flag.String("file", "", "The file to write to. If not specified, `~/.kube/config` is used")
@@ -56,15 +57,18 @@ func main() {
 
 	var clientID string
 	var clientSecret string
+	var mailDomain string
 	if gcf != nil {
 		clientID = gcf.ClientID
 		clientSecret = gcf.ClientSecret
+		mailDomain = gcf.mailDomain
 	} else {
 		clientID = viper.GetString("client-id")
 		clientSecret = viper.GetString("client-secret")
+		mailDomain = viper.GetString("mail-domain")
 	}
 
-	helper.LaunchBrowser(viper.GetBool("open"), oauthUrl, clientID)
+	helper.LaunchBrowser(viper.GetBool("open"), oauthUrl, clientID, mailDomain)
 
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Enter the code Google gave you: ")
